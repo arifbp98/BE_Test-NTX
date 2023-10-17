@@ -4,12 +4,11 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 const app = express();
+const routes = require("./app/routes/exampleRoutes");
+const controllers = require("./app/controllers/exampleController")
+const PORT = process.env.PORT || 7878;
 
-const corsOptions = {
-  origin: ["http://localhost:8080"],
-};
-
-app.use(cors(corsOptions));
+app.use(cors());
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json());
@@ -35,10 +34,13 @@ app.get("/", (req, res) => {
 });
 
 // routes
-// require("./app/routes/exaole.routes")(app);
+app.use("/api", routes);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 7878;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
 });
+
+controllers.callmeWebSocket(server)
+
+module.exports = app
